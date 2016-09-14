@@ -3,7 +3,7 @@ package main;
 
 /**
  * Class represents SCARA robotic arm.
- * 
+ *
  * @Arthur Roberts
  * @0.0
  */
@@ -14,7 +14,9 @@ import java.util.*;
 
 public class Arm
 {
-    
+
+	private static boolean isDrawing = false;
+
     // fixed arm parameters
     private int xm1;  // coordinates of the motor(measured in pixels of the picture)
     private int ym1;
@@ -24,33 +26,33 @@ public class Arm
     // parameters of servo motors - linear function pwm(angle)
     // each of two motors has unique function which should be measured
     // linear function cam be described by two points
-    // motor 1, point1 
-    private double pwm1_val_1; 
+    // motor 1, point1
+    private double pwm1_val_1;
     private double theta1_val_1;
     // motor 1, point 2
-    private double pwm1_val_2; 
+    private double pwm1_val_2;
     private double theta1_val_2;
-    
+
     // motor 2, point 1
-    private double pwm2_val_1; 
+    private double pwm2_val_1;
     private double theta2_val_1;
     // motor 2, point 2
-    private double pwm2_val_2; 
+    private double pwm2_val_2;
     private double theta2_val_2;
-    
-    
+
+
     // current state of the arm
     private double theta1; // angle of the upper arm
     private double theta2;
-    
+
     private double xj1;     // positions of the joints
-    private double yj1; 
+    private double yj1;
     private double xj2;
-    private double yj2; 
+    private double yj2;
     private double xt;     // position of the tool
     private double yt;
     private boolean valid_state; // is state of the arm physically possible?
-    
+
     /**
      * Constructor for objects of class Arm
      */
@@ -65,10 +67,15 @@ public class Arm
         theta2 = -90.0*Math.PI/180.0;
         valid_state = false;
     }
-  
+
     // draws arm on the canvas
     public void draw()
     {
+    	if (Arm.isDrawing){
+    		System.out.println("protected from mutli threading");
+    		return;
+    	}
+    	Arm.isDrawing = true;
         // draw arm
         int height = UI.getCanvasHeight();
         int width = UI.getCanvasWidth();
@@ -77,7 +84,7 @@ public class Arm
         yj1 = ym1 + r*Math.sin(theta1);
         xj2 = xm2 + r*Math.cos(theta2);
         yj2 = ym2 + r*Math.sin(theta2);
-        
+
         //draw motors and write angles
         int mr = 20;
         UI.setLineWidth(5);
@@ -91,7 +98,7 @@ public class Arm
         UI.drawString(out_str, xm1-2*mr,ym1-mr/2+3*mr);
         out_str=String.format("ym1=%d",ym1);
         UI.drawString(out_str, xm1-2*mr,ym1-mr/2+4*mr);
-        // ditto for second motor                
+        // ditto for second motor
         out_str = String.format("t2=%3.1f",theta2*180/Math.PI);
         UI.drawString(out_str, xm2+2*mr,ym2-mr/2+2*mr);
         out_str=String.format("xm2=%d",xm2);
@@ -101,7 +108,7 @@ public class Arm
         // draw Field Of View
         UI.setColor(Color.GRAY);
         UI.drawRect(0,0,640,480);
-         
+
        // it can b euncommented later when
        // kinematic equations are derived
         if ( valid_state) {
@@ -116,13 +123,13 @@ public class Arm
           double rt = 20;
           UI.drawOval(xt-rt/2,yt-rt/2,rt,rt);
         }
-        
+        Arm.isDrawing = false;
    }
-    
-   // calculate tool position from motor angles 
+
+   // calculate tool position from motor angles
    // updates variable in the class
    public void directKinematic(){
-       
+
        // midpoint between joints
        //double  xa =.... ;
        //double  ya =.... ;
@@ -142,18 +149,18 @@ public class Arm
        } else {
            valid_state = false;
         }
-       
+
     }
-    
+
     // motor angles from tool position
     // updetes variables of the class
     public void inverseKinematic(double xt_new,double yt_new){
-         
+
         valid_state = true;
         xt = xt_new;
         yt = yt_new;
         valid_state = true;
-        double dx1 = xt - xm1; 
+        double dx1 = xt - xm1;
         double dy1 = yt - ym1;
         // distance between pem and motor
 
@@ -163,7 +170,7 @@ public class Arm
             valid_state = false;
             return;
         }
-        
+
         double l1 = d1/2;
         double h1 = Math.sqrt(r*r - d1*d1/4);
         // elbows positions
@@ -176,9 +183,9 @@ public class Arm
             //UI.println("Ange 1 -invalid");
             return;
         }
-        
+
         // theta12 = atan2(yj12 - ym1,xj12-xm1);
-        double dx2 = xt - xm2; 
+        double dx2 = xt - xm2;
         double dy2 = yt - ym2;
         double d2 = 0;//@TODO change
         if (d2>2*r){
@@ -188,7 +195,7 @@ public class Arm
         }
 
         double l2 = d2/2;
-        
+
         double h2 = Math.sqrt(r*r - d2*d2/4);
         // elbows positions
         xj2 = 0;//@TODO change
@@ -200,12 +207,12 @@ public class Arm
             //UI.println("Ange 2 -invalid");
             return;
         }
-        
+
         //UI.printf("xt:%3.1f, yt:%3.1f\n",xt,yt);
         //UI.printf("theta1:%3.1f, theta2:%3.1f\n",theta1*180/Math.PI,theta2*180/Math.PI);
         return;
     }
-    
+
     // returns angle of motor 1
     public double get_theta1(){
         return theta1;
@@ -219,7 +226,7 @@ public class Arm
         theta1 = t1;
         theta2 = t2;
     }
-    
+
     // returns motor control signal
     // for motor to be in position(angle) theta1
     // linear intepolation
@@ -233,5 +240,5 @@ public class Arm
         //pwm = (int)(pwm2_90 + (theta2 - 90)*pwm2_slope);
         return pwm;
     }
-    
+
  }
