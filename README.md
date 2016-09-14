@@ -1,4 +1,4 @@
-# scarafam
+# scarafam - Arm 7
 ### Git repository for the Scara program development in ENGR110 
 ### DUE DATE: Friday the 7th October
 
