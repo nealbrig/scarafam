@@ -123,6 +123,16 @@ public class Arm
           double rt = 20;
           UI.drawOval(xt-rt/2,yt-rt/2,rt,rt);
         }
+        UI.setColor(Color.BLACK);
+        UI.setLineWidth(1);
+
+        UI.drawLine(this.xj1, this.yj1, this.xj2, this.yj2);
+
+        UI.drawOval(this.xj1 - this.r/2, this.yj1 - this.r/2, this.r, this.r);
+        UI.drawOval(this.xj2 - this.r/2, this.yj2 - this.r/2, this.r, this.r);
+
+        UI.setLineWidth(5);
+
         Arm.isDrawing = false;
    }
 
