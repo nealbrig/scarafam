@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 public class ToolPath
 {
 
-     int n_steps; //straight line segmentt will be broken
+     //int n_steps; //straight line segmentt will be broken
                       // into that many sections
 
      // storage for angles and
@@ -47,7 +47,7 @@ public class ToolPath
     public ToolPath()
     {
         // initialise instance variables
-      n_steps = 50;
+      //n_steps = 50;
       theta1_vector = new ArrayList<Double>();
       theta2_vector = new ArrayList<Double>();
       pen_vector = new ArrayList<Integer>();
@@ -65,6 +65,7 @@ public class ToolPath
             // take two points
             PointXY p0 = drawing.get_drawing_point(i);
             PointXY p1 = drawing.get_drawing_point(i+1);
+            int n_steps = (int) Math.sqrt(((p0.get_x()-p1.get_x())*(p0.get_x()-p1.get_x())) + ((p0.get_y() - p1.get_y()) * (p0.get_y() - p1.get_y())))/3;
             // break line between points into segments: n_steps of them
             for ( int j = 0 ; j< n_steps;j++) { // break segment into n_steps str. lines
                 double x = p0.get_x() + j*(p1.get_x()-p0.get_x())/n_steps;
@@ -134,10 +135,12 @@ public class ToolPath
             OutputStreamWriter osw = new OutputStreamWriter(is);
             Writer w = new BufferedWriter(osw);
             String str_out;
+            w.write(pwm1_vector.get(0) + "," + pwm2_vector.get(0) + ",1100\n");
             for (int i = 1; i < pwm1_vector.size() ; i++){
                 str_out = pwm1_vector.get(i)+ "," + pwm2_vector.get(i) + "," + pen_vector.get(i) + "\n";
                 w.write(str_out);
             }
+            w.write(pwm1_vector.get(pwm1_vector.size()-1) + "," + pwm2_vector.get(pwm2_vector.size()-1) + ",1100\n");
             w.close();
         } catch (IOException e) {
             UI.println("Problem writing to the file statsTest.txt");

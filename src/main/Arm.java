@@ -53,6 +53,8 @@ public class Arm
     private double yt;
     private boolean valid_state; // is state of the arm physically possible?
 
+    public boolean is_valid_state(){return this.valid_state;}
+
     /**
      * Constructor for objects of class Arm
      */

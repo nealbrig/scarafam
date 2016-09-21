@@ -16,6 +16,8 @@ import java.awt.*;
  */
 public class Main{
 
+	private double pixel_size = 5.7017;
+
 	private Arm arm;
 	private Drawing drawing;
 	private ToolPath tool_path;
@@ -105,27 +107,32 @@ public class Main{
 		// add point
 		if (   (state == 2) &&(action.equals("clicked"))){
 			// add point(pen down) and draw
-			UI.printf("Adding point x=%f y=%f\n",x,y);
-			drawing.add_point_to_path(x,y,true); // add point with pen down
-			System.out.println(drawing.get_drawing_size());
+			UI.printf("trying to add point x=%f y=%f\n",x,y);
+			// add point with pen down
 
 			arm.inverseKinematic(x,y);
-			arm.draw();
-			drawing.draw();
-			drawing.print_path();
+			if(arm.is_valid_state()){
+				drawing.add_point_to_path(x,y,true);
+				arm.draw();
+				drawing.draw();
+				drawing.print_path();
+			}
 		}
 
 
 		if (   (state == 3) &&(action.equals("clicked"))){
 			// add point and draw
 			//UI.printf("Adding point x=%f y=%f\n",x,y);
-			drawing.add_point_to_path(x,y,false); // add point wit pen up
+
 
 			arm.inverseKinematic(x,y);
-			arm.draw();
-			drawing.draw();
-			drawing.print_path();
-			state = 2;
+			if(arm.is_valid_state()){
+				drawing.add_point_to_path(x,y,false); // add point with pen up
+				arm.draw();
+				drawing.draw();
+				drawing.print_path();
+				state = 2;
+			}
 		}
 	}
 
