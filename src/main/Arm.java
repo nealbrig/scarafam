@@ -92,14 +92,14 @@ public class Arm
         UI.drawOval(xm1-mr/2,ym1-mr/2,mr,mr);
         UI.drawOval(xm2-mr/2,ym2-mr/2,mr,mr);
         // write parameters of first motor
-        String out_str=String.format("t1=%3.1f",theta1*180/Math.PI);
+        String out_str=String.format("t1=%3.1f",theta1/**180/Math.PI*/);
         UI.drawString(out_str, xm1-2*mr,ym1-mr/2+2*mr);
         out_str=String.format("xm1=%d",xm1);
         UI.drawString(out_str, xm1-2*mr,ym1-mr/2+3*mr);
         out_str=String.format("ym1=%d",ym1);
         UI.drawString(out_str, xm1-2*mr,ym1-mr/2+4*mr);
         // ditto for second motor
-        out_str = String.format("t2=%3.1f",theta2*180/Math.PI);
+        out_str = String.format("t2=%3.1f",theta2/**180/Math.PI*/);
         UI.drawString(out_str, xm2+2*mr,ym2-mr/2+2*mr);
         out_str=String.format("xm2=%d",xm2);
         UI.drawString(out_str, xm2+2*mr,ym2-mr/2+3*mr);
@@ -139,7 +139,7 @@ public class Arm
    // calculate tool position from motor angles
    // updates variable in the class
    public void directKinematic(){
-        
+
        // midpoint between joints
        //double  xa =.... ;
        //double  ya =.... ;
@@ -164,38 +164,38 @@ public class Arm
 
     // motor angles from tool position
     // updetes variables of the class
-    public void inverseKinematic(double xt_new,double yt_new){            
-        
+    public void inverseKinematic(double xt_new,double yt_new){
+
         valid_state = true;
         xt = xt_new;
         yt = yt_new;
-        
+
         double dx1 = Math.abs(xt - xm1);
         double dy1 = Math.abs(yt - ym1);
-        
+
         double dx2 = Math.abs(xt - xm2);
         double dy2 = Math.abs(yt - ym2);
-        
+
         double d_from_m1 = Math.sqrt(dx1*dx1+dy1*dy1);
         double d_from_m2 = Math.sqrt(dx2*dx2+dy2*dy2);
-        
+
         if(d_from_m1 < r || d_from_m2 < r || d_from_m1 > 2*r || d_from_m2 > 2*r){
             valid_state = false;
             return;
         }
-        
+
         double theta1_p1 = Math.atan(dy1/dx1);
         double theta2_p1 = Math.atan(dy2/dx2);
-        
+
         if (xt < xm1)theta1_p1 = Math.atan(dx1/dy1) + Math.PI/2;
         if (xt > xm2)theta2_p1 = Math.atan(dx2/dy2) + Math.PI/2;
-        
+
         double theta1_p2 = Math.acos((d_from_m1/2)/r);
-        double theta2_p2 = Math.acos((d_from_m2/2)/r);        
-        
+        double theta2_p2 = Math.acos((d_from_m2/2)/r);
+
         this.theta1 = -(theta1_p1 + theta1_p2);
         this.theta2 = -(Math.PI - (theta2_p1 + theta2_p2));
-        
+
         return;
     }
 
@@ -217,12 +217,12 @@ public class Arm
     // for motor to be in position(angle) theta1
     // linear intepolation
     public int get_pwm1(){
-        int pwm = 0;
+        int pwm = (int) ((Math.abs(theta1) + 13.399)/0.0957);
         return pwm;
     }
     // ditto for motor 2
     public int get_pwm2(){
-        int pwm =0;
+        int pwm = (int) ((Math.abs(theta2) + 73.193)/0.1014);
         //pwm = (int)(pwm2_90 + (theta2 - 90)*pwm2_slope);
         return pwm;
     }
