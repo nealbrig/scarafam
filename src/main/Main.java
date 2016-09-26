@@ -60,6 +60,9 @@ public class Main{
 
 		this.arm = new Arm();
 		this.drawing = new Drawing();
+		// adding a slider for the width of the lines displayed
+		UI.addSlider("Pen width", 1, 10, drawing.lineWidth, this::setWidth);
+		
 		this.tool_path = new ToolPath();
 		this.run();
 		arm.draw();
@@ -177,6 +180,9 @@ public class Main{
 		}
 	}
 
+	public void setWidth(double width){
+        	drawing.lineWidth = width;        
+    	}
 
 	public void save_xy(){
 		state = 0;
