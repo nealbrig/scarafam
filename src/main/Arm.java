@@ -219,12 +219,14 @@ public class Arm
     // for motor to be in position(angle) theta1
     // linear intepolation
     public int get_pwm1(){
-        int pwm = (int) ((Math.abs(theta1) + 13.399)/0.0957);
+        int pwm = (int) ((Math.abs(theta1) + 13.399)/0.0957); // first equation
+	//int pwm = (int) ((Math.abs(theta1) + 15.862)/0.0956); // second equation, not significantly different
         return pwm;
     }
     // ditto for motor 2
     public int get_pwm2(){
         int pwm = (int) ((Math.abs(theta2) + 73.193)/0.1014);
+	//int pwm = (int) ((Math.abs(theta2) + 86.26)/0.1001); // I'm just curious to see if this difference in the y intercept is significant
         //pwm = (int)(pwm2_90 + (theta2 - 90)*pwm2_slope);
         return pwm;
     }
