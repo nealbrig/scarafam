@@ -30,13 +30,14 @@ public class Drawing
 
 	// set of points
 	private ArrayList<PointXY> path;
-
+	public double lineWidth;
 	/**
 	 * Constructor for objects of class Drawing
 	 */
 	public Drawing()
 	{
 		path = new ArrayList<PointXY>();
+		lineWidth = 5;
 	}
 
 	public void add_point_to_path(double x, double y,boolean pen)
@@ -61,6 +62,7 @@ public class Drawing
 
 	public void draw(){
 		//draw path
+		UI.setLineWidth(lineWidth);
 		for (int i = 1; i < path.size() ; i++){
 			PointXY p0 = get_drawing_point(i-1);
 			PointXY p1 = get_drawing_point(i);
