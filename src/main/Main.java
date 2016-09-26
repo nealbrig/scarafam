@@ -28,6 +28,15 @@ public class Main{
 	// 3 - enter path pause. Click does not add the point to the path
 
 	/**      */
+	
+	/*#
+		Adding the below variables for circle drawing:
+	*/
+	
+	private int numCirclePoints = 20;
+	private boolean doCircle = false;
+	
+	
 	public Main(){
 		UI.initialise();
 		UI.addButton("xy to angles", this::inverse);
@@ -37,6 +46,10 @@ public class Main{
 		UI.addButton("Save path Ang", this::save_ang);
 		UI.addButton("Load path Ang:Play", this::load_ang);
 		UI.addButton("save PWM", this::save_pwm);
+		
+		//Added another button below:
+		
+		UI.addButton("Draw Circle - Use with Enter path XY", () -> this.doCircle = true);
 
 		// UI.addButton("Quit", UI::quit);
 		UI.setMouseMotionListener(this::doMouse);
@@ -78,6 +91,34 @@ public class Main{
 		String out_str=String.format("%3.1f %3.1f",x,y);
 		UI.drawString(out_str, x+10,y+10);
 		//
+		
+		/*#
+			Adding a new if statement to handle the drawing of the perfect circle
+		*/
+		if(doCircle && action.equals("clicked")){
+			doCircle = false;
+			state = 2;
+			double xCoord, yCoord;
+			//circle diameter must be 50mm
+			double rad = 25/pixel_size; // radius of circle
+			
+			double theta = 0; // angle of point with respect to the circle centre
+			// the x and y coordinates at the time of the click will be the centre point coordinates
+			
+			double stepValue = 360/numCirclePoints; // the increment for each loop in the while loop
+			
+			while(theta <= 360){ // note that if numCirclePoints is say 10, then 11 points will be made to ensure that the circle is connected back to the starting point
+				xCoord = x + rad*Math.cos(Math.toRadians(theta));
+				yCoord = y + rad*Math.sin(Math.toRadians(theta));
+				doMouse("clicked", xCoord, yCoord); // Taking a slightly recursive approach to adding the points autonomously
+				theta += stepValue;
+			}
+			return; // nessecary otherwise an extra point will be added at the centre of the circle
+			
+		}
+		
+		
+		
 		if ((state == 1)&&(action.equals("clicked"))){
 			// draw as
 
